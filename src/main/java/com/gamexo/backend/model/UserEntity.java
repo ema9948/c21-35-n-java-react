@@ -24,7 +24,7 @@ public class UserEntity {
 
     private String password;
 
-    private Role role;
+    private Role rol;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Customer customer;

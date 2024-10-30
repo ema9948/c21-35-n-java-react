@@ -1,10 +1,12 @@
 package com.gamexo.backend.service;
 
+import com.gamexo.backend.config.ResponseExeption;
 import com.gamexo.backend.dto.user.UserInfoDTO;
 import com.gamexo.backend.mapper.UserMapper;
 import com.gamexo.backend.model.UserEntity;
 import com.gamexo.backend.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +27,15 @@ public class UserService {
     }
 
     public UserInfoDTO getSingleUser(Long id){
-
-        Optional<UserEntity> optUser =  userRepository.findById(id);
-
-        if(optUser.isEmpty()) throw new EntityNotFoundException("Entity not found");
-
-        return userMapper.userToDto(optUser.get());
-
+        return  userRepository.findById(id)
+                .filter(user -> !user.getRol().name().equalsIgnoreCase("admin"))
+                .map(userMapper::userToDto)
+                .orElseThrow(()-> new ResponseExeption("404","ID NOT FOUND"));
     }
 
-    public List<UserEntity> findAll() {
-        return userRepository.findAll();
+    public List<UserInfoDTO> findAll() {
+        return userRepository.findAll().stream()
+                .filter(user -> !user.getRol().name().equalsIgnoreCase("admin"))
+                .map(UserInfoDTO::new).toList();
     }
 }

@@ -2,6 +2,7 @@ package com.gamexo.backend.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gamexo.backend.config.ResponseExeption;
 import com.gamexo.backend.dto.product.ProductInfoDTO;
 import com.gamexo.backend.dto.product.ProductMappingDTO;
 import com.gamexo.backend.dto.product.ProductRegistrationDTO;
@@ -61,7 +62,7 @@ public class ProductService {
                 currentPage++;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ResponseExeption("404", "NOT FOUND GAME NAME");
         }
 
         return matchingGames;
@@ -77,18 +78,20 @@ public class ProductService {
             Product product = productMapper.mapToProduct(productMappingDTO, registrationDTO);
             return productRepository.save(product);
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+
+            throw new ResponseExeption("404", "NOT FOUND GAME NAME");
         }
     }
 
     public Product getSingleProduct(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + id));
+                .orElseThrow(() -> new ResponseExeption("404", "Product not found with ID: " + id));
     }
 
-    public List<ProductInfoDTO> getProducts(){
-        List<Product> products =  productRepository.findAll();
+    public List<ProductInfoDTO> getProducts() {
+        List<Product> products = productRepository.findAll();
         return productMapper.toDtoList(products);
     }
+
+
 }

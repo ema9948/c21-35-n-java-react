@@ -53,7 +53,9 @@ public class AuthController {
                     {
                         "name": "John Doe",
                         "email": "john.doe@example.com",
-                        "password": "SecurePassword123!"
+                        "password": "SecurePassword123!",
+                        "rol": "ADMIN OR CLIENT!"
+                       
                     }
                     """
                             )
@@ -75,7 +77,7 @@ public class AuthController {
                         "id": 1,
                         "name": "John Doe",
                         "email": "john.doe@example.com",
-                        "role": "CLIENT"
+                         "rol": "ADMIN OR CLIENT!"
                     }
                     """
                             )

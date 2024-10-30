@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(sessionMngConfig -> sessionMngConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                    auth.requestMatchers("/auth/**","/games").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/users", "/users/**").authenticated();
                     auth.requestMatchers(HttpMethod.GET, "/products/**").authenticated();
                     auth.requestMatchers("/order", "/order/**").authenticated();

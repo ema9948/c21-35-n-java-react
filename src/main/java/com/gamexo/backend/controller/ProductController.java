@@ -26,7 +26,7 @@ public class ProductController {
     }
 
     @GetMapping("/getGames/{name}")
-    public ResponseEntity<Map<Long,String>> getGamesByName(@PathVariable String name){
+    public ResponseEntity<Map<Long,String>> getGamesByName(@PathVariable("name") String name){
         Map<Long, String> products = productService.searchGameNamesByName(name);
         return ResponseEntity.ok(products);
     }
@@ -39,7 +39,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getGame(@PathVariable Long id){
+    public ResponseEntity<Product> getGame(@PathVariable("id") Long id){
         Product product = productService.getSingleProduct(id);
         return ResponseEntity.ok(product);
     }

@@ -50,10 +50,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Email " + username + " not found "));
+                .orElseThrow(() -> new ResponseExeption("404","EMAIL NOT FOUND"));
 
         List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-        simpleGrantedAuthorities.add(new SimpleGrantedAuthority(("ROLE_".concat(user.getRole().name()))));
+        simpleGrantedAuthorities.add(new SimpleGrantedAuthority(("ROLE_".concat(user.getRol().name()))));
 
         return new User(
                 user.getEmail(),
@@ -70,10 +70,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserInfoDTO registerUser(UserRegistrationDTO userRegistrationDTO) {
         emailInUsed(userRegistrationDTO.email());
 
+        if (userRegistrationDTO.rol().name().isEmpty())
+            throw new  ResponseExeption("404","Ingrese el rol");
+
         UserEntity user = UserEntity.builder()
                 .email(userRegistrationDTO.email())
                 .password(passwordEncoder.encode(userRegistrationDTO.password()))
-                .role(userRegistrationDTO.rol())
+                .rol(userRegistrationDTO.rol())
                 .customer(Customer.builder().name(userRegistrationDTO.name()).build())
                 .build();
 
@@ -93,10 +96,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public UserAuthorizedDTO loginUser(UserLoginRequest loginRequest) {
 
-        String userName = loginRequest.email();
+        String email = loginRequest.email();
         String password = loginRequest.password();
 
-        Authentication authentication = authenticate(userName, password);
+        Authentication authentication = authenticate(email, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String authority = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
@@ -110,10 +113,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
         String accessToken = jwtUtils.createToken(authentication);
-        return new UserAuthorizedDTO(userName,
+        return new UserAuthorizedDTO(email,
                 "User logged sucessfully",
                 accessToken,
-                authority);
+                authority,
+                uerName(email)
+               );
     }
 
     private Authentication authenticate(String userName, String password) {
@@ -121,13 +126,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserDetails userDetails = loadUserByUsername(userName);
 
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new BadCredentialsException("Invalid password");
+            throw new ResponseExeption("404","Invalid password");
         }
 
         return new UsernamePasswordAuthenticationToken(userName, userDetails.getPassword(), userDetails.getAuthorities());
 
     }
 
+    private String uerName(String email){
+        return userRepository.findByEmail(email).orElse(null).getCustomer().getName();
+    }
 
     private void emailInUsed(String email) {
         if (userRepository.findByEmail(email).isPresent())

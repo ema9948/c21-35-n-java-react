@@ -4,6 +4,7 @@ import com.gamexo.backend.dto.user.UserInfoDTO;
 import com.gamexo.backend.model.UserEntity;
 import com.gamexo.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/users")
+@RequestMapping("/users/")
 public class UserController {
 
    private final UserService userService;
@@ -22,16 +23,15 @@ public class UserController {
    }
 
     @GetMapping
-    public List<UserEntity> getUsers(){
+    public List<UserInfoDTO> getUsers(){
         return userService.findAll();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserInfoDTO> getUser(@PathVariable Long id) {
+    @GetMapping("{id}")
+    public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
         UserInfoDTO userDTO = userService.getSingleUser(id);
-        return ResponseEntity.ok(userDTO);
+        return new ResponseEntity<>(userDTO, HttpStatusCode.valueOf(200));
     }
-
     @GetMapping("/test") String openEndpoint(){
         return "Hola!!";
     }

@@ -1,0 +1,37 @@
+HELP.md
+
+# Ignore all target directories across the project
+**/target/
+**../.idea/
+# Ignore Maven Wrapper files if not using Maven Wrapper
+.mvn/
+.mvn/wrapper/maven-wrapper.jar
+
+### IDE Specific Ignored Files ###
+
+# Spring Tool Suite (STS)
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+**/build/
+
+# Visual Studio Code
+.vscode/

@@ -73,7 +73,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserEntity user = UserEntity.builder()
                 .email(userRegistrationDTO.email())
                 .password(passwordEncoder.encode(userRegistrationDTO.password()))
-                .role(Role.CLIENT)
+                .role(userRegistrationDTO.rol())
                 .customer(Customer.builder().name(userRegistrationDTO.name()).build())
                 .build();
 
